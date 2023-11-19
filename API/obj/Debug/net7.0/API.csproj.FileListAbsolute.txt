@@ -68,3 +68,10 @@ C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\D
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\Debug\net7.0\API.genruntimeconfig.cache
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\Debug\net7.0\ref\API.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll

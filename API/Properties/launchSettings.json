@@ -6,10 +6,11 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SolveChess_MySQLConnectionString": "server=bokmanite.xyz;database=solvechess-userdata;uid=api;password=10Mpwe_B-kjW47pI;"
+        "SolveChess_MySQLConnectionString": "server=bokmanite.xyz;database=solvechess-userdata;uid=api;password=10Mpwe_B-kjW47pI;",
+        "SolveChess_JwtSecret": "s@*RrS1C|Ffg[z.3OyiDT<_2G^LJB;6Kig'9y.oNWggw=aCvJks`Xx2IAmlQKw"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5047"
+      "applicationUrl": "http://localhost:7210"
     },
     "https": {
       "commandName": "Project",
@@ -17,10 +18,11 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SolveChess_MySQLConnectionString": "server=bokmanite.xyz;database=solvechess-userdata;uid=api;password=10Mpwe_B-kjW47pI;"
+        "SolveChess_MySQLConnectionString": "server=bokmanite.xyz;database=solvechess-userdata;uid=api;password=10Mpwe_B-kjW47pI;",
+        "SolveChess_JwtSecret": "s@*RrS1C|Ffg[z.3OyiDT<_2G^LJB;6Kig'9y.oNWggw=aCvJks`Xx2IAmlQKw"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7074;http://localhost:5047"
+      "applicationUrl": "https://localhost:7211;http://localhost:7210"
     },
     "IIS Express": {
       "commandName": "IISExpress",

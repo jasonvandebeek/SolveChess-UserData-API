@@ -14,11 +14,11 @@ public class UserService : IUserService
         _userDataDAL = userDataDAL;
     }
 
-    public string? GetUsername(string userID)
+    public string? GetUsername(string userId)
     {
         try
         {
-            string? username = _userDataDAL.GetUsername(userID);
+            string? username = _userDataDAL.GetUsername(userId);
 
             return username;
         }
@@ -28,11 +28,11 @@ public class UserService : IUserService
         }
     }
 
-    public void UpdateUsername(string userID, string username)
+    public void UpdateUsername(string userId, string username)
     {
         try
         {
-            _userDataDAL.UpdateUsername(userID, username);
+            _userDataDAL.UpdateUsername(userId, username);
         }
         catch (Exception ex)
         {
@@ -40,11 +40,11 @@ public class UserService : IUserService
         }
     }
 
-    public int? GetUserRating(string userID)
+    public int? GetUserRating(string userId)
     {
         try
         {
-            int? rating = _userDataDAL.GetUserRating(userID);
+            int? rating = _userDataDAL.GetUserRating(userId);
 
             return rating;
         }
@@ -54,11 +54,11 @@ public class UserService : IUserService
         }
     }
 
-    public UserDTO? GetUser(string userID)
+    public UserDTO? GetUser(string userId)
     {
         try
         {
-            UserDTO? userDTO = _userDataDAL.GetUser(userID);
+            UserDTO? userDTO = _userDataDAL.GetUser(userId);
 
             return userDTO;
         }
@@ -68,11 +68,11 @@ public class UserService : IUserService
         }
     }
 
-    public byte[]? GetProfilePicture(string userID)
+    public byte[]? GetProfilePicture(string userId)
     {
         try
         {
-            byte[]? profilePicture = _userDataDAL.GetProfilePicture(userID);
+            byte[]? profilePicture = _userDataDAL.GetProfilePicture(userId);
             
             return profilePicture;
         }
@@ -82,11 +82,11 @@ public class UserService : IUserService
         }
     }
 
-    public void UpdateProfilePicture(string userID, byte[] picture)
+    public void UpdateProfilePicture(string userId, byte[] picture)
     {
         try
         {
-            _userDataDAL.UpdateProfilePicture(userID, picture);
+            _userDataDAL.UpdateProfilePicture(userId, picture);
         }
         catch (Exception ex)
         {
@@ -94,4 +94,15 @@ public class UserService : IUserService
         }
     }
 
+    public void CreateUser(string userId, string username, byte[]? picture)
+    {
+        try
+        {
+            _userDataDAL.CreateUser(userId, username, picture);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while creating a new user: " + ex.Message);
+        }
+    }
 }

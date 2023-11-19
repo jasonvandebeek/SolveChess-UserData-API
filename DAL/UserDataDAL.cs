@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using SolveChess.DAL.Model;
 using SolveChess.Logic.DAL;
 using SolveChess.Logic.DTO;
+using System;
 
 namespace SolveChess.DAL;
 
@@ -16,27 +17,27 @@ public class UserDataDAL : IUserDataDAL
         _dbContext = new AppDbContext(options);
     }
 
-    public string? GetUsername(string userID)
+    public string? GetUsername(string userId)
     {
 
         return _dbContext.User
-            .Where(u => u.Id == userID)
+            .Where(u => u.Id == userId)
             .Select(u => u.Username)
             .FirstOrDefault();
     }
 
-    public int? GetUserRating(string userID)
+    public int? GetUserRating(string userId)
     {
         return _dbContext.User
-            .Where(u => u.Id == userID)
+            .Where(u => u.Id == userId)
             .Select(u => u.Rating)
             .FirstOrDefault();
     }
 
-    public UserDTO? GetUser(string userID)
+    public UserDTO? GetUser(string userId)
     {
         var user = _dbContext.User
-            .Where(u => u.Id == userID)
+            .Where(u => u.Id == userId)
             .FirstOrDefault();
 
         if (user == null)
@@ -51,10 +52,10 @@ public class UserDataDAL : IUserDataDAL
         return userDTO;
     }
 
-    public void UpdateUsername(string userID, string newUsername)
+    public void UpdateUsername(string userId, string newUsername)
     {
         var user = _dbContext.User
-            .Where(u => u.Id == userID)
+            .Where(u => u.Id == userId)
             .FirstOrDefault();
 
         if(user == null)
@@ -65,28 +66,40 @@ public class UserDataDAL : IUserDataDAL
         _dbContext.SaveChanges();
     }
 
-    public byte[]? GetProfilePicture(string userID)
+    public byte[]? GetProfilePicture(string userId)
     {
         return _dbContext.User
-            .Where(u => u.Id == userID)
+            .Where(u => u.Id == userId)
             .Select(u => u.ProfilePicture)
             .FirstOrDefault();
     }
 
-    public void UpdateProfilePicture(string userID, byte[] picture)
+    public void UpdateProfilePicture(string userId, byte[] picture)
     {
         var user = _dbContext.User
-            .Where(u => u.Id == userID)
+            .Where(u => u.Id == userId)
             .FirstOrDefault();
 
         if (user == null)
             return;
 
-        var sql = "UPDATE `User` SET `ProfilePicture` = @picture WHERE `Id` = @userID";
-        _dbContext.Database.ExecuteSqlRaw(sql, new MySqlParameter("@picture", picture), new MySqlParameter("@userID", userID));
+        var sql = "UPDATE `User` SET `ProfilePicture` = @picture WHERE `Id` = @userId";
+        _dbContext.Database.ExecuteSqlRaw(sql, new MySqlParameter("@picture", picture), new MySqlParameter("@userId", userId));
 
         //user.ProfilePicture = picture;
         //_dbContext.SaveChanges();
     }
 
+    public void CreateUser(string userId, string username, byte[]? profilePicture)
+    {
+        var user = new User()
+        {
+            Id = userId,
+            Username = username,
+            ProfilePicture = profilePicture
+        };
+
+        _dbContext.User.Add(user);
+        _dbContext.SaveChanges();
+    }
 }

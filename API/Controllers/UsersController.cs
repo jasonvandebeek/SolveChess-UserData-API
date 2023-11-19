@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SolveChess.API.Models;
+using SolveChess.Logic.DTO;
 using SolveChess.Logic.ServiceInterfaces;
+using System.Security.Claims;
 
 namespace SolveChess.API.Controllers;
 
@@ -28,9 +31,26 @@ public class UsersController : ControllerBase
             Username = user.Username,
             Rating = user.Rating,
             ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { id }, Request.Scheme) ?? ""
-    };
+        };
 
         return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost()]
+    public IActionResult CreateUser([FromForm] UserCreationModel model)
+    {
+        string? userId = HttpContext.User.FindFirst("Id")?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        using var memoryStream = new MemoryStream();
+        model.ProfilePicture?.CopyTo(memoryStream);
+        var fileBytes = memoryStream.ToArray();
+
+        _userService.CreateUser(userId, model.Username, fileBytes);
+
+        return Ok();
     }
 
     [HttpGet("{id}/username")]
@@ -43,9 +63,14 @@ public class UsersController : ControllerBase
         return Ok(username);
     }
 
+    [Authorize]
     [HttpPut("{id}/username")]
     public IActionResult UpdateUsername(string id, [FromBody] string newUsername)
     {
+        string? userId = HttpContext.User.FindFirst("Id")?.Value;
+        if (userId != id)
+            return Unauthorized();
+
         _userService.UpdateUsername(id, newUsername);
         return Ok();
     }
@@ -70,21 +95,24 @@ public class UsersController : ControllerBase
         return File(profilePicture, "image/png", $"{id}.png");
     }
 
+    [Authorize]
     [HttpPut("{id}/profile-picture")]
     public IActionResult UpdateProfilePicture(string id, [FromForm] IFormFile picture)
     {
+        string? userId = HttpContext.User.FindFirst("Id")?.Value;
+        if (userId != id)
+            return Unauthorized();
+
         if (picture == null || picture.Length == 0)
             return NotFound();
 
         try
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                picture.CopyTo(memoryStream);
-                var fileBytes = memoryStream.ToArray();
+            using var memoryStream = new MemoryStream();
+            picture.CopyTo(memoryStream);
+            var fileBytes = memoryStream.ToArray();
 
-                _userService.UpdateProfilePicture(id, fileBytes);
-            }
+            _userService.UpdateProfilePicture(id, fileBytes);
 
             return Ok("File uploaded and saved successfully");
         }
