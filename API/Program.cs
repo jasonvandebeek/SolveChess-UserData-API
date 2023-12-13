@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SolveChess.Logic.Interfaces;
+using SolveChess.API.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseMySQL(Environment.GetEnvironmentVariable("SolveChess_MySQLConnectionString") ?? throw new Exception("No connection string found in .env variables!"));
+    var mysqlConnectionString = Environment.GetEnvironmentVariable("SolveChess_MySQLConnectionString") ?? throw new MissingEnvVariableException("No connection string found in .env variables!");
+
+    options.UseMySQL(mysqlConnectionString);
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -37,7 +40,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    var jwtSecret = Environment.GetEnvironmentVariable("SolveChess_JwtSecret") ?? throw new Exception("No jwt secret string found in .env variables!");
+    var jwtSecret = Environment.GetEnvironmentVariable("SolveChess_JwtSecret") ?? throw new MissingEnvVariableException("No jwt secret string found in .env variables!");
 
     var tokenValidationParameters = new TokenValidationParameters
     {
