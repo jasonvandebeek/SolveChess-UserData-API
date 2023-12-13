@@ -6,11 +6,9 @@ pipeline {
 		scannerHome = tool 'SonarScanner for MSBuild'		
     }
     stages {
-		
         stage('Build .NET Application') {
             steps {
                 script {
-					sh "dotnet clean"
 					sh "dotnet restore"
                     sh "dotnet build"
                 }
