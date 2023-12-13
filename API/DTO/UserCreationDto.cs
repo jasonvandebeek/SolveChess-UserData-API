@@ -2,11 +2,11 @@
 
 namespace SolveChess.API.Models;
 
-public class UserCreationModel
+public class UserCreationDto
 {
 
-    [Required]
-    public string Username { get; set; }
+    public string? Username { get; set; }
+
     public IFormFile? ProfilePicture { get; set; }
 
 }

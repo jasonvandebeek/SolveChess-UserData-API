@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using SolveChess.DAL;
 using SolveChess.DAL.Model;
 using SolveChess.Logic.Service;
-using SolveChess.Logic.ServiceInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using SolveChess.Logic.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(Environment.GetEnvironmentVariable("SolveChess_MySQLConnectionString") ?? throw new Exception("No connection string found in .env variables!"));
 });
 
-builder.Services.AddScoped<IUserService, UserService>(provider =>
-{
-    var dbContextOptions = provider.GetRequiredService<DbContextOptions<AppDbContext>>();
-    return new UserService(new UserDataDAL(dbContextOptions));
-});
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddCors(options =>
 {

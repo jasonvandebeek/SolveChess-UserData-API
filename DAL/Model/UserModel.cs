@@ -5,12 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SolveChess.DAL.Model;
 
-public class User
+public class UserModel
 {
 
     [Key]
-    public string Id { get; set; }
-    public string Username { get; set; }
+    public string Id { get; set; } = null!;
+
+    [Required]
+    public string Username { get; set; } = null!;
 
     [DefaultValue(100)]
     public int Rating { get; set; }

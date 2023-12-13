@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SolveChess.API.Exceptions;
 using SolveChess.API.Models;
-using SolveChess.Logic.DTO;
-using SolveChess.Logic.ServiceInterfaces;
-using System.Security.Claims;
+using SolveChess.Logic.Interfaces;
 
 namespace SolveChess.API.Controllers;
 
@@ -20,13 +19,13 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetUserById(string id)
+    public async Task<IActionResult> GetUserById(string id)
     {
-        var user = _userService.GetUser(id);
+        var user = await _userService.GetUser(id);
         if (user == null)
             return NotFound();
 
-        var response = new UserModel()
+        var response = new UserDto()
         {
             Username = user.Username,
             Rating = user.Rating,
@@ -38,25 +37,23 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPost()]
-    public IActionResult CreateUser([FromForm] UserCreationModel model)
+    public async Task<IActionResult> CreateUser([FromForm] UserCreationDto model)
     {
-        string? userId = HttpContext.User.FindFirst("Id")?.Value;
-        if (userId == null)
-            return Unauthorized();
+        string userId = GetUserIdFromCookies();
 
         using var memoryStream = new MemoryStream();
         model.ProfilePicture?.CopyTo(memoryStream);
         var fileBytes = memoryStream.ToArray();
 
-        _userService.CreateUser(userId, model.Username, fileBytes);
+        await _userService.CreateUser(userId, model.Username, fileBytes);
 
         return Ok();
     }
 
     [HttpGet("{id}/username")]
-    public IActionResult GetUsernameById(string id)
+    public async Task<IActionResult> GetUsernameById(string id)
     {
-        var username = _userService.GetUsername(id);
+        var username = await _userService.GetUsername(id);
         if (username == null)
             return NotFound();
 
@@ -65,20 +62,20 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPut("{id}/username")]
-    public IActionResult UpdateUsername(string id, [FromBody] string newUsername)
+    public async Task<IActionResult> UpdateUsername(string id, [FromBody] string newUsername)
     {
-        string? userId = HttpContext.User.FindFirst("Id")?.Value;
+        string userId = GetUserIdFromCookies();
         if (userId != id)
-            return Unauthorized();
+            return Forbid();
 
-        _userService.UpdateUsername(id, newUsername);
+        await _userService.UpdateUsername(id, newUsername);
         return Ok();
     }
 
     [HttpGet("{id}/rating")]
-    public IActionResult GetRatingById(string id)
+    public async Task<IActionResult> GetRatingById(string id)
     {
-        var rating = _userService.GetUserRating(id);
+        var rating = await _userService.GetUserRating(id);
         if (rating == null)
             return NotFound();
 
@@ -86,9 +83,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}/profile-picture")]
-    public IActionResult GetProfilePictureById(string id)
+    public async Task<IActionResult> GetProfilePictureById(string id)
     {
-        byte[]? profilePicture = _userService.GetProfilePicture(id);
+        byte[]? profilePicture = await _userService.GetProfilePicture(id);
         if (profilePicture == null || profilePicture.Length == 0)
             return NotFound();
 
@@ -97,11 +94,11 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPut("{id}/profile-picture")]
-    public IActionResult UpdateProfilePicture(string id, [FromForm] IFormFile picture)
+    public async Task<IActionResult> UpdateProfilePicture(string id, [FromForm] IFormFile picture)
     {
-        string? userId = HttpContext.User.FindFirst("Id")?.Value;
+        string userId = GetUserIdFromCookies();
         if (userId != id)
-            return Unauthorized();
+            return Forbid();
 
         if (picture == null || picture.Length == 0)
             return NotFound();
@@ -112,7 +109,7 @@ public class UsersController : ControllerBase
             picture.CopyTo(memoryStream);
             var fileBytes = memoryStream.ToArray();
 
-            _userService.UpdateProfilePicture(id, fileBytes);
+            await _userService.UpdateProfilePicture(id, fileBytes);
 
             return Ok("File uploaded and saved successfully");
         }
@@ -121,6 +118,12 @@ public class UsersController : ControllerBase
             return StatusCode(500, "Internal Server Error");
         }
 
+    }
+
+    private string GetUserIdFromCookies()
+    {
+        var userId = HttpContext.User.FindFirst("Id")?.Value ?? throw new InvalidJwtTokenException();
+        return userId;
     }
 
 }

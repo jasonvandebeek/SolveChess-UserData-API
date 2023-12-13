@@ -1,108 +1,135 @@
 ﻿using SolveChess.Logic.DAL;
-using SolveChess.Logic.DTO;
-using SolveChess.Logic.ServiceInterfaces;
+using SolveChess.Logic.Models;
+using SolveChess.Logic.Interfaces;
+using System;
+using SolveChess.Logic.Helpers;
+using SolveChess.Logic.Exceptions;
 
 namespace SolveChess.Logic.Service;
 
 public class UserService : IUserService
 {
 
-    private readonly IUserDataDAL _userDataDAL;
+    private readonly IUserDataDal _userDataDal;
+    private readonly HttpClient _httpClient;
 
-    public UserService(IUserDataDAL userDataDAL)
+    public UserService(IUserDataDal userDataDal, HttpClient httpClient)
     {
-        _userDataDAL = userDataDAL;
+        _userDataDal = userDataDal;
+        _httpClient = httpClient;
     }
 
-    public string? GetUsername(string userId)
+    public async Task<string?> GetUsername(string userId)
     {
         try
         {
-            string? username = _userDataDAL.GetUsername(userId);
+            string? username = await _userDataDal.GetUsername(userId);
 
             return username;
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while retrieving the username: " + ex.Message);
+            throw new Exception("An error occurred while retrieving the username!", exception);
         }
     }
 
-    public void UpdateUsername(string userId, string username)
+    public async Task UpdateUsername(string userId, string username)
     {
         try
         {
-            _userDataDAL.UpdateUsername(userId, username);
+            await _userDataDal.UpdateUsername(userId, username);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while updating the username: " + ex.Message);
+            throw new Exception("An error occurred while updating the username!", exception);
         }
     }
 
-    public int? GetUserRating(string userId)
+    public async Task<int?> GetUserRating(string userId)
     {
         try
         {
-            int? rating = _userDataDAL.GetUserRating(userId);
+            int? rating = await _userDataDal.GetUserRating(userId);
 
             return rating;
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while retrieving the user rating: " + ex.Message);
+            throw new Exception("An error occurred while retrieving the user rating!", exception);
         }
     }
 
-    public UserDTO? GetUser(string userId)
+    public async Task<User?> GetUser(string userId)
     {
         try
         {
-            UserDTO? userDTO = _userDataDAL.GetUser(userId);
+            User? user = await _userDataDal.GetUser(userId);
+            if(user != null)
+                return user;
 
-            return userDTO;
+            var response = await _httpClient.GetAsync($"https://api.solvechess.xyz/auth/user/{userId}");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            await CreateUser(userId, null, null);
+            return await _userDataDal.GetUser(userId);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while retrieving the user: " + ex.Message);
+            throw new Exception("An error occurred while retrieving the user!", exception);
         }
     }
 
-    public byte[]? GetProfilePicture(string userId)
+    public async Task<byte[]?> GetProfilePicture(string userId)
     {
         try
         {
-            byte[]? profilePicture = _userDataDAL.GetProfilePicture(userId);
+            byte[]? profilePicture = await _userDataDal.GetProfilePicture(userId);
             
             return profilePicture;
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while retrieving the profile picture: " + ex.Message);
+            throw new Exception("An error occurred while retrieving the profile picture!", exception);
         }
     }
 
-    public void UpdateProfilePicture(string userId, byte[] picture)
+    public async Task UpdateProfilePicture(string userId, byte[] picture)
     {
         try
         {
-            _userDataDAL.UpdateProfilePicture(userId, picture);
+            await _userDataDal.UpdateProfilePicture(userId, picture);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while updating the profile picture: " + ex.Message);
+            throw new Exception("An error occurred while updating the profile picture!", exception);
         }
     }
 
-    public void CreateUser(string userId, string username, byte[]? picture)
+    public async Task CreateUser(string userId, string? username, byte[]? picture)
     {
+        username ??= await GetRandomUsername(3);
+
         try
         {
-            _userDataDAL.CreateUser(userId, username, picture);
+            await _userDataDal.CreateUser(userId, username, picture);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            throw new Exception("An error occurred while creating a new user: " + ex.Message);
+            throw new Exception("An error occurred while creating a new user!", exception);
         }
     }
+
+    private async Task<string> GetRandomUsername(int maxAttemps)
+    {
+        if (maxAttemps <= 0)
+            throw new UsernameGenerationException();
+
+        var username = UsernameHelper.GetRandomUsername();
+        if (await _userDataDal.DoesUsernameExist(username))
+            return await GetRandomUsername(maxAttemps - 1);
+
+        return username;
+    }
+
 }
