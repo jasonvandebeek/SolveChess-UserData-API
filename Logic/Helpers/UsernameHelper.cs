@@ -4,6 +4,8 @@ namespace SolveChess.Logic.Helpers;
 public static class UsernameHelper
 {
 
+    private static readonly Random random = new();
+
     private static readonly string[] adjectives = {
             "Happy", "Brilliant", "Radiant", "Vibrant", "Glorious",
             "Joyful", "Exuberant", "Fantastic", "Spectacular", "Marvelous",
@@ -17,8 +19,6 @@ public static class UsernameHelper
 
     public static string GetRandomUsername()
     {
-        var random = new Random();
-
         string randomAdjective = adjectives[random.Next(adjectives.Length)];
         string randomChessPiece = chessPieces[random.Next(chessPieces.Length)];
         int randomNumber = random.Next(1, 1000);

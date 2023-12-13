@@ -1,7 +1,6 @@
 ﻿using SolveChess.Logic.DAL;
 using SolveChess.Logic.Models;
 using SolveChess.Logic.Interfaces;
-using System;
 using SolveChess.Logic.Helpers;
 using SolveChess.Logic.Exceptions;
 
@@ -21,103 +20,48 @@ public class UserService : IUserService
 
     public async Task<string?> GetUsername(string userId)
     {
-        try
-        {
-            string? username = await _userDataDal.GetUsername(userId);
-
-            return username;
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while retrieving the username!", exception);
-        }
+        return await _userDataDal.GetUsername(userId);
     }
 
     public async Task UpdateUsername(string userId, string username)
     {
-        try
-        {
-            await _userDataDal.UpdateUsername(userId, username);
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while updating the username!", exception);
-        }
+        await _userDataDal.UpdateUsername(userId, username);
     }
 
     public async Task<int?> GetUserRating(string userId)
     {
-        try
-        {
-            int? rating = await _userDataDal.GetUserRating(userId);
-
-            return rating;
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while retrieving the user rating!", exception);
-        }
+        return await _userDataDal.GetUserRating(userId);
     }
 
     public async Task<User?> GetUser(string userId)
     {
-        try
-        {
-            User? user = await _userDataDal.GetUser(userId);
-            if(user != null)
-                return user;
+        User? user = await _userDataDal.GetUser(userId);
+        if(user != null)
+            return user;
 
-            var response = await _httpClient.GetAsync($"https://api.solvechess.xyz/auth/user/{userId}");
-            if (!response.IsSuccessStatusCode)
-                return null;
+        var response = await _httpClient.GetAsync($"https://api.solvechess.xyz/auth/user/{userId}");
+        if (!response.IsSuccessStatusCode)
+            return null;
 
-            await CreateUser(userId, null, null);
-            return await _userDataDal.GetUser(userId);
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while retrieving the user!", exception);
-        }
+        await CreateUser(userId, null, null);
+        return await _userDataDal.GetUser(userId);
     }
 
     public async Task<byte[]?> GetProfilePicture(string userId)
     {
-        try
-        {
-            byte[]? profilePicture = await _userDataDal.GetProfilePicture(userId);
-            
-            return profilePicture;
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while retrieving the profile picture!", exception);
-        }
+        return await _userDataDal.GetProfilePicture(userId);
     }
 
     public async Task UpdateProfilePicture(string userId, byte[] picture)
     {
-        try
-        {
-            await _userDataDal.UpdateProfilePicture(userId, picture);
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while updating the profile picture!", exception);
-        }
+        await _userDataDal.UpdateProfilePicture(userId, picture);
     }
 
     public async Task CreateUser(string userId, string? username, byte[]? picture)
     {
         username ??= await GetRandomUsername(3);
 
-        try
-        {
-            await _userDataDal.CreateUser(userId, username, picture);
-        }
-        catch (Exception exception)
-        {
-            throw new Exception("An error occurred while creating a new user!", exception);
-        }
+        await _userDataDal.CreateUser(userId, username, picture);
     }
 
     private async Task<string> GetRandomUsername(int maxAttemps)
