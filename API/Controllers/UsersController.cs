@@ -47,17 +47,17 @@ public class UsersController : ControllerBase
 
         await _userService.CreateUser(userId, model.Username, fileBytes);
 
-        return Ok();
+        return StatusCode(StatusCodes.Status201Created);
     }
 
     [HttpGet("{id}/username")]
     public async Task<IActionResult> GetUsernameById(string id)
     {
-        var username = await _userService.GetUsername(id);
-        if (username == null)
+        var user = await _userService.GetUser(id);
+        if (user == null)
             return NotFound();
 
-        return Ok(username);
+        return Ok(user.Username);
     }
 
     [Authorize]
@@ -75,21 +75,24 @@ public class UsersController : ControllerBase
     [HttpGet("{id}/rating")]
     public async Task<IActionResult> GetRatingById(string id)
     {
-        var rating = await _userService.GetUserRating(id);
-        if (rating == null)
+        var user = await _userService.GetUser(id);
+        if (user == null)
             return NotFound();
 
-        return Ok(rating);
+        return Ok(user.Rating);
     }
 
     [HttpGet("{id}/profile-picture")]
     public async Task<IActionResult> GetProfilePictureById(string id)
     {
-        byte[]? profilePicture = await _userService.GetProfilePicture(id);
-        if (profilePicture == null || profilePicture.Length == 0)
+        var user = await _userService.GetUser(id);
+        if (user == null)
             return NotFound();
 
-        return File(profilePicture, "image/png", $"{id}.png");
+        if (user.ProfilePicture == null || user.ProfilePicture.Length == 0)
+            return Ok(null);
+
+        return File(user.ProfilePicture, "image/png", $"{id}.png");
     }
 
     [Authorize]
@@ -101,23 +104,15 @@ public class UsersController : ControllerBase
             return Forbid();
 
         if (picture == null || picture.Length == 0)
-            return NotFound();
+            return BadRequest();
 
-        try
-        {
-            using var memoryStream = new MemoryStream();
-            picture.CopyTo(memoryStream);
-            var fileBytes = memoryStream.ToArray();
+        using var memoryStream = new MemoryStream();
+        picture.CopyTo(memoryStream);
+        var fileBytes = memoryStream.ToArray();
 
-            await _userService.UpdateProfilePicture(id, fileBytes);
+        await _userService.UpdateProfilePicture(id, fileBytes);
 
-            return Ok("File uploaded and saved successfully");
-        }
-        catch
-        {
-            return StatusCode(500, "Internal Server Error");
-        }
-
+        return Ok("File uploaded and saved successfully");
     }
 
     private string GetUserIdFromCookies()

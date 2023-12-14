@@ -18,21 +18,6 @@ public class UserService : IUserService
         _httpClient = httpClient;
     }
 
-    public async Task<string?> GetUsername(string userId)
-    {
-        return await _userDataDal.GetUsername(userId);
-    }
-
-    public async Task UpdateUsername(string userId, string username)
-    {
-        await _userDataDal.UpdateUsername(userId, username);
-    }
-
-    public async Task<int?> GetUserRating(string userId)
-    {
-        return await _userDataDal.GetUserRating(userId);
-    }
-
     public async Task<User?> GetUser(string userId)
     {
         User? user = await _userDataDal.GetUser(userId);
@@ -47,21 +32,29 @@ public class UserService : IUserService
         return await _userDataDal.GetUser(userId);
     }
 
-    public async Task<byte[]?> GetProfilePicture(string userId)
+    public async Task CreateUser(string userId, string? username, byte[]? picture)
     {
-        return await _userDataDal.GetProfilePicture(userId);
+        username ??= await GetRandomUsername(3);
+
+        var user = new User
+        {
+            Id = userId,
+            Username = username,
+            Rating = 300,
+            ProfilePicture = picture
+        };
+
+        await _userDataDal.CreateUser(user);
+    }
+
+    public async Task UpdateUsername(string userId, string username)
+    {
+        await _userDataDal.UpdateUsername(userId, username);
     }
 
     public async Task UpdateProfilePicture(string userId, byte[] picture)
     {
         await _userDataDal.UpdateProfilePicture(userId, picture);
-    }
-
-    public async Task CreateUser(string userId, string? username, byte[]? picture)
-    {
-        username ??= await GetRandomUsername(3);
-
-        await _userDataDal.CreateUser(userId, username, picture);
     }
 
     private async Task<string> GetRandomUsername(int maxAttemps)

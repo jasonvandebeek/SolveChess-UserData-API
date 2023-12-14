@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using SolveChess.DAL.Model;
 using SolveChess.Logic.DAL;
 using SolveChess.Logic.Models;
@@ -44,8 +43,10 @@ public class UserDataDal : IUserDataDal
 
         var user = new User()
         {
+            Id = userId,
             Username = userModel.Username,
-            Rating = userModel.Rating
+            Rating = userModel.Rating,
+            ProfilePicture = userModel.ProfilePicture
         };
 
         return user;
@@ -82,19 +83,12 @@ public class UserDataDal : IUserDataDal
         if (user == null)
             return;
 
-        var sql = "UPDATE `User` SET `ProfilePicture` = @picture WHERE `Id` = @userId";
-        await _dbContext.Database.ExecuteSqlRawAsync(sql, new MySqlParameter("@picture", picture), new MySqlParameter("@userId", userId));
+        user.ProfilePicture = picture;
+        await _dbContext.SaveChangesAsync();
     }
 
-    public async Task CreateUser(string userId, string username, byte[]? profilePicture)
+    public async Task CreateUser(User user)
     {
-        var user = new UserModel()
-        {
-            Id = userId,
-            Username = username,
-            ProfilePicture = profilePicture
-        };
-
         _dbContext.User.Add(user);
         await _dbContext.SaveChangesAsync();
     }

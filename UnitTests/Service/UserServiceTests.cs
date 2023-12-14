@@ -14,46 +14,6 @@ public class UserServiceTests
 {
 
     [TestMethod]
-    public async Task GetUsernameTest()
-    {
-        //Arrange
-        var userdataDalMock = new Mock<IUserDataDal>();
-        var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-        var httpClient = new HttpClient(httpMessageHandlerMock.Object);
-
-        userdataDalMock.Setup(dal => dal.GetUsername(It.IsAny<string>()))
-            .ReturnsAsync("test");
-
-        var service = new UserService(userdataDalMock.Object, httpClient);
-
-        //Act
-        var result = await service.GetUsername("123");
-
-        //Assert
-        Assert.AreEqual("test", result);
-    }
-
-    [TestMethod]
-    public async Task GetUserRatingTest()
-    {
-        //Arrange
-        var userdataDalMock = new Mock<IUserDataDal>();
-        var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-        var httpClient = new HttpClient(httpMessageHandlerMock.Object);
-
-        userdataDalMock.Setup(dal => dal.GetUserRating(It.IsAny<string>()))
-            .ReturnsAsync(100);
-
-        var service = new UserService(userdataDalMock.Object, httpClient);
-
-        //Act
-        var result = await service.GetUserRating("123");
-
-        //Assert
-        Assert.AreEqual(100, result);
-    }
-
-    [TestMethod]
     public async Task GetUserTest_UserExists()
     {
         //Arrange
@@ -126,35 +86,14 @@ public class UserServiceTests
 
         var httpClient = new HttpClient(httpMessageHandlerMock.Object);
 
-        userdataDalMock.Setup(dal => dal.GetUser(It.IsAny<string>()))
+        userdataDalMock.SetupSequence(x => x.GetUser(It.IsAny<string>()))
+            .ReturnsAsync(null as User)
             .ReturnsAsync(expected);
 
         var service = new UserService(userdataDalMock.Object, httpClient);
 
         //Act
         var result = await service.GetUser("123");
-
-        //Assert
-        Assert.AreEqual(expected, result);
-    }
-
-    [TestMethod]
-    public async Task GetProfilePictureTest()
-    {
-        //Arrange
-        var expected = new byte[] { 1 };
-
-        var userdataDalMock = new Mock<IUserDataDal>();
-        var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-        var httpClient = new HttpClient(httpMessageHandlerMock.Object);
-
-        userdataDalMock.Setup(dal => dal.GetProfilePicture(It.IsAny<string>()))
-            .ReturnsAsync(expected);
-
-        var service = new UserService(userdataDalMock.Object, httpClient);
-
-        //Act
-        var result = await service.GetProfilePicture("123");
 
         //Assert
         Assert.AreEqual(expected, result);

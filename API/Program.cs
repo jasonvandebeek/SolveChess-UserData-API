@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SolveChess.Logic.Interfaces;
 using SolveChess.API.Exceptions;
+using SolveChess.Logic.DAL;
+using SolveChess.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +22,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var mysqlConnectionString = Environment.GetEnvironmentVariable("SolveChess_MySQLConnectionString") ?? throw new MissingEnvVariableException("No connection string found in .env variables!");
 
-    options.UseMySQL(mysqlConnectionString);
+    options.UseMySql(mysqlConnectionString, ServerVersion.AutoDetect(mysqlConnectionString));
 });
+
+builder.Services.AddScoped<IUserDataDal, UserDataDal>();
+
+builder.Services.AddScoped<HttpClient>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 

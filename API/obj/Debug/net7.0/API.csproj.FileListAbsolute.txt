@@ -25,14 +25,12 @@ C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\D
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Mono.TextTemplating.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\MySql.Data.dll
-C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\MySql.EntityFrameworkCore.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.CodeDom.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.Configuration.ConfigurationManager.dll
-C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.Drawing.Common.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.Security.Cryptography.ProtectedData.dll
@@ -74,3 +72,6 @@ C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\D
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\Debug\net7.0\API.pdb
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\Debug\net7.0\API.genruntimeconfig.cache
 C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\obj\Debug\net7.0\ref\API.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\MySqlConnector.dll
+C:\Users\tuhnk\Desktop\SolveChess Architecture\SolveChess UserData API\API\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
