@@ -25,11 +25,21 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound();
 
+        var baseUrl = $"{Request.Scheme}";
+
+        var forwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        var forwardedProto = Request.Headers["X-Forwarded-Proto"].FirstOrDefault();
+
+        if (!string.IsNullOrEmpty(forwardedFor))
+        {
+            baseUrl = $"{forwardedProto}://{forwardedFor}";
+        }
+
         var response = new UserDto()
         {
             Username = user.Username,
             Rating = user.Rating,
-            ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { id }, Request.Scheme) ?? ""
+            ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { id }, baseUrl) ?? ""
         };
 
         return Ok(response);
