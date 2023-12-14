@@ -15,23 +15,6 @@ public class UserDataDal : IUserDataDal
         _dbContext = dbContext;
     }
 
-    public async Task<string?> GetUsername(string userId)
-    {
-
-        return await _dbContext.User
-            .Where(u => u.Id == userId)
-            .Select(u => u.Username)
-            .FirstOrDefaultAsync();
-    }
-
-    public async Task<int?> GetUserRating(string userId)
-    {
-        return await _dbContext.User
-            .Where(u => u.Id == userId)
-            .Select(u => u.Rating)
-            .FirstOrDefaultAsync();
-    }
-
     public async Task<User?> GetUser(string userId)
     {
         var userModel = await _dbContext.User
@@ -64,14 +47,6 @@ public class UserDataDal : IUserDataDal
         user.Username = newUsername;
 
         await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task<byte[]?> GetProfilePicture(string userId)
-    {
-        return await _dbContext.User
-            .Where(u => u.Id == userId)
-            .Select(u => u.ProfilePicture)
-            .FirstOrDefaultAsync();
     }
 
     public async Task UpdateProfilePicture(string userId, byte[] picture)
