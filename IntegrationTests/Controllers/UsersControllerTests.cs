@@ -57,6 +57,32 @@ public class UsersControllerTests
     }
 
     [TestMethod]
+    public async Task GetUserByUsernameTest_Returns200OkAndUser()
+    {
+        //Arrange
+        var client = _factory.CreateClient();
+
+        var json = new
+        {
+            username = _user.Username,
+            rating = _user.Rating,
+            profilePictureUrl = $"{client.BaseAddress}Users/{_user.Id}/profile-picture"
+        };
+        string expected = JsonConvert.SerializeObject(json, Formatting.None);
+
+        _dbContext.User.Add(_user);
+        _dbContext.SaveChanges();
+
+        //Act
+        var response = await client.GetAsync($"/users?username={_user.Username}");
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.AreEqual(expected, await response.Content.ReadAsStringAsync());
+    }
+
+
+    [TestMethod]
     public async Task CreateUserTest_Returns201CreatedWithUsername()
     {
         //Arrange

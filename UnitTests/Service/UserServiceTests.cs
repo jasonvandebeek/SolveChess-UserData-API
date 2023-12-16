@@ -14,10 +14,10 @@ public class UserServiceTests
 {
 
     [TestMethod]
-    public async Task GetUserTest_UserExists()
+    public async Task GetUserByIdTest_UserExists()
     {
         //Arrange
-        var expected = new User { Username = "Test", Rating = 100 };
+        var expected = new User { Id = "123", Username = "Test", Rating = 100 };
 
         var userdataDalMock = new Mock<IUserDataDal>();
         var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -32,20 +32,20 @@ public class UserServiceTests
 
         var httpClient = new HttpClient(httpMessageHandlerMock.Object);
 
-        userdataDalMock.Setup(dal => dal.GetUser(It.IsAny<string>()))
+        userdataDalMock.Setup(dal => dal.GetUserById(It.IsAny<string>()))
             .ReturnsAsync(expected);
 
         var service = new UserService(userdataDalMock.Object, httpClient);
 
         //Act
-        var result = await service.GetUser("123");
+        var result = await service.GetUserById("123");
 
         //Assert
         Assert.AreEqual(expected, result);
     }
 
     [TestMethod]
-    public async Task GetUserTest_UserDoesntExistAtAll()
+    public async Task GetUserByIdTest_UserDoesntExistAtAll()
     {
         //Arrange
         var userdataDalMock = new Mock<IUserDataDal>();
@@ -61,17 +61,17 @@ public class UserServiceTests
         var service = new UserService(userdataDalMock.Object, httpClient);
 
         //Act
-        var result = await service.GetUser("123");
+        var result = await service.GetUserById("123");
 
         //Assert
         Assert.AreEqual(null, result);
     }
 
     [TestMethod]
-    public async Task GetUserTest_UserDoesntExistIsCreated()
+    public async Task GetUserByIdTest_UserDoesntExistIsCreated()
     {
         //Arrange
-        var expected = new User { Username = "Test", Rating = 100 };
+        var expected = new User { Id = "123", Username = "Test", Rating = 100 };
 
         var userdataDalMock = new Mock<IUserDataDal>();
         var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -86,14 +86,44 @@ public class UserServiceTests
 
         var httpClient = new HttpClient(httpMessageHandlerMock.Object);
 
-        userdataDalMock.SetupSequence(x => x.GetUser(It.IsAny<string>()))
-            .ReturnsAsync(null as User)
+        userdataDalMock.Setup(x => x.GetUserById(It.IsAny<string>()))
+            .ReturnsAsync(null as User);
+
+        var service = new UserService(userdataDalMock.Object, httpClient);
+
+        //Act
+        var result = await service.GetUserById("123");
+
+        //Assert
+        Assert.AreEqual(expected.Id, result.Id);
+    }
+
+    [TestMethod]
+    public async Task GetUserByUsernameTest()
+    {
+        //Arrange
+        var expected = new User { Id = "123", Username = "Test", Rating = 100 };
+
+        var userdataDalMock = new Mock<IUserDataDal>();
+        var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+
+        httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("123")
+            });
+
+        var httpClient = new HttpClient(httpMessageHandlerMock.Object);
+
+        userdataDalMock.Setup(dal => dal.GetUserByUsername(It.IsAny<string>()))
             .ReturnsAsync(expected);
 
         var service = new UserService(userdataDalMock.Object, httpClient);
 
         //Act
-        var result = await service.GetUser("123");
+        var result = await service.GetUserByUsername("123");
 
         //Assert
         Assert.AreEqual(expected, result);

@@ -21,7 +21,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {
-        var user = await _userService.GetUser(id);
+        var user = await _userService.GetUserById(id);
         if (user == null)
             return NotFound();
 
@@ -30,6 +30,23 @@ public class UsersController : ControllerBase
             Username = user.Username,
             Rating = user.Rating,
             ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { id }, Request.Scheme) ?? ""
+        };
+
+        return Ok(response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserByUsername([FromQuery] string username)
+    {
+        var user = await _userService.GetUserByUsername(username);
+        if (user == null)
+            return NotFound();
+
+        var response = new UserDto()
+        {
+            Username = user.Username,
+            Rating = user.Rating,
+            ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { user.Id }, Request.Scheme) ?? ""
         };
 
         return Ok(response);
@@ -45,15 +62,15 @@ public class UsersController : ControllerBase
         model.ProfilePicture?.CopyTo(memoryStream);
         var fileBytes = memoryStream.ToArray();
 
-        await _userService.CreateUser(userId, model.Username, fileBytes);
+        var createdUser = await _userService.CreateUser(userId, model.Username, fileBytes);
 
-        return StatusCode(StatusCodes.Status201Created);
+        return StatusCode(StatusCodes.Status201Created, createdUser.Username);
     }
 
     [HttpGet("{id}/username")]
     public async Task<IActionResult> GetUsernameById(string id)
     {
-        var user = await _userService.GetUser(id);
+        var user = await _userService.GetUserById(id);
         if (user == null)
             return NotFound();
 
@@ -75,7 +92,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}/rating")]
     public async Task<IActionResult> GetRatingById(string id)
     {
-        var user = await _userService.GetUser(id);
+        var user = await _userService.GetUserById(id);
         if (user == null)
             return NotFound();
 
@@ -85,7 +102,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}/profile-picture")]
     public async Task<IActionResult> GetProfilePictureById(string id)
     {
-        var user = await _userService.GetUser(id);
+        var user = await _userService.GetUserById(id);
         if (user == null)
             return NotFound();
 

@@ -15,7 +15,7 @@ public class UserDataDal : IUserDataDal
         _dbContext = dbContext;
     }
 
-    public async Task<User?> GetUser(string userId)
+    public async Task<User?> GetUserById(string userId)
     {
         var userModel = await _dbContext.User
             .Where(u => u.Id == userId)
@@ -76,5 +76,25 @@ public class UserDataDal : IUserDataDal
             return false;
 
         return true;
+    }
+
+    public async Task<User?> GetUserByUsername(string username)
+    {
+        var userModel = await _dbContext.User
+            .Where(u => u.Username == username)
+            .FirstOrDefaultAsync();
+
+        if (userModel == null)
+            return null;
+
+        var user = new User()
+        {
+            Id = userModel.Id,
+            Username = username,
+            Rating = userModel.Rating,
+            ProfilePicture = userModel.ProfilePicture
+        };
+
+        return user;
     }
 }

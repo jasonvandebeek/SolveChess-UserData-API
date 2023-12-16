@@ -18,9 +18,9 @@ public class UserService : IUserService
         _httpClient = httpClient;
     }
 
-    public async Task<User?> GetUser(string userId)
+    public async Task<User?> GetUserById(string userId)
     {
-        User? user = await _userDataDal.GetUser(userId);
+        User? user = await _userDataDal.GetUserById(userId);
         if(user != null)
             return user;
 
@@ -28,11 +28,18 @@ public class UserService : IUserService
         if (!response.IsSuccessStatusCode)
             return null;
 
-        await CreateUser(userId, null, null);
-        return await _userDataDal.GetUser(userId);
+        var createdUser = await CreateUser(userId, null, null);
+        return createdUser;
     }
 
-    public async Task CreateUser(string userId, string? username, byte[]? picture)
+    public async Task<User?> GetUserByUsername(string username)
+    {
+        User? user = await _userDataDal.GetUserByUsername(username);
+        
+        return user;
+    }
+
+    public async Task<User> CreateUser(string userId, string? username, byte[]? picture)
     {
         username ??= await GetRandomUsername(3);
 
@@ -45,6 +52,7 @@ public class UserService : IUserService
         };
 
         await _userDataDal.CreateUser(user);
+        return user;
     }
 
     public async Task UpdateUsername(string userId, string username)
