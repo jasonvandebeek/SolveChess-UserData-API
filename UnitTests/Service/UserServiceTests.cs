@@ -93,6 +93,7 @@ public class UserServiceTests
 
         //Act
         var result = await service.GetUserById("123");
+        Assert.IsNotNull(result);
 
         //Assert
         Assert.AreEqual(expected.Id, result.Id);
