@@ -27,6 +27,7 @@ public class UsersController : ControllerBase
 
         var response = new UserDto()
         {
+            UserId = user.Id,
             Username = user.Username,
             Rating = user.Rating,
             ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { id }, Request.Scheme) ?? ""
@@ -44,6 +45,7 @@ public class UsersController : ControllerBase
 
         var response = new UserDto()
         {
+            UserId = user.Id,
             Username = user.Username,
             Rating = user.Rating,
             ProfilePictureUrl = Url.Action("GetProfilePictureById", "Users", new { user.Id }, Request.Scheme) ?? ""
