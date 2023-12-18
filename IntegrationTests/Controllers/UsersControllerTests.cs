@@ -39,6 +39,7 @@ public class UsersControllerTests
 
         var json = new
         {
+            userId,
             username = _user.Username,
             rating = _user.Rating,
             profilePictureUrl = $"{client.BaseAddress}Users/{userId}/profile-picture"
@@ -64,6 +65,7 @@ public class UsersControllerTests
 
         var json = new
         {
+            userId = _user.Id,
             username = _user.Username,
             rating = _user.Rating,
             profilePictureUrl = $"{client.BaseAddress}Users/{_user.Id}/profile-picture"
