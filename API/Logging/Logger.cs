@@ -3,7 +3,7 @@ using SolveChess.API.Exceptions;
 
 namespace SolveChess.API.Logging;
 
-public class Logger
+public static class Logger
 {
 
     private static readonly string logDirectory = Environment.GetEnvironmentVariable("SolveChess_LogPath") ?? throw new MissingEnvVariableException("No path for log files found in .env variables!");
