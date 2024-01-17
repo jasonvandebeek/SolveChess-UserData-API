@@ -1,9 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using SolveChess.Logic.Exceptions;
+using System.Runtime.Serialization;
 
 namespace SolveChess.API.Exceptions;
 
 [Serializable]
-public class InvalidJwtTokenException : Exception
+public class InvalidJwtTokenException : SolveChessBaseException
 {
     public InvalidJwtTokenException()
     {

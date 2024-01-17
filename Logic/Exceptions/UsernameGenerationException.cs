@@ -3,8 +3,9 @@
 namespace SolveChess.Logic.Exceptions;
 
 [Serializable]
-public class UsernameGenerationException : Exception
+public class UsernameGenerationException : SolveChessBaseException
 {
+
     public UsernameGenerationException()
     {
     }
@@ -20,4 +21,5 @@ public class UsernameGenerationException : Exception
     protected UsernameGenerationException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
+
 }

@@ -9,6 +9,7 @@ using SolveChess.API.Exceptions;
 using SolveChess.Logic.DAL;
 using SolveChess.DAL;
 using Microsoft.AspNetCore.HttpOverrides;
+using SolveChess.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +93,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseExceptionHandlingMiddleware();
 
 app.UseCors("AllowOrigin");
 

@@ -18,6 +18,12 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
+    [HttpGet("Exception")]
+    public IActionResult GetException()
+    {
+        throw new Exception("Ooh no test!");
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {
